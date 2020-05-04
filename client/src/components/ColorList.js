@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 import axiosWithAuth from "../api/axiosWithAuth";
 
+import setForegroundColor from "../utils/setForegroundColor";
+
 const initialColor = {
   color: "",
   code: { hex: "#" },
@@ -78,7 +80,12 @@ const ColorList = ({ colors, triggerUpdate }) => {
       </div>
       {editing === "existing" && (
         <form onSubmit={saveEdit}>
-          <legend>{`editing ${colorToEdit.color}`}</legend>
+          <legend
+            style={{
+              backgroundColor: colorToEdit.code.hex,
+              color: setForegroundColor(colorToEdit.code.hex),
+            }}
+          >{`editing ${colorToEdit.color}`}</legend>
           <label>
             color name:
             <input
@@ -110,7 +117,14 @@ const ColorList = ({ colors, triggerUpdate }) => {
       )}
       {editing === "new" && (
         <form onSubmit={saveNewColor}>
-          <legend>new color</legend>
+          <legend
+            style={{
+              backgroundColor: colorToEdit.code.hex,
+              color: setForegroundColor(colorToEdit.code.hex),
+            }}
+          >
+            new color
+          </legend>
           <label>
             color name:
             <input

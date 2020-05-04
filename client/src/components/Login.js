@@ -2,6 +2,8 @@ import React from "react";
 
 import { axiosWithoutAuth } from "../api/axiosWithAuth";
 
+import TokenContext from "../contexts";
+
 const initialState = {
   username: "",
   password: "",
@@ -10,6 +12,8 @@ const initialState = {
 
 export default class Login extends React.Component {
   state = initialState;
+
+  static contextType = TokenContext;
 
   constructor(props) {
     super(props);
@@ -32,8 +36,8 @@ export default class Login extends React.Component {
     this.setState({ isLoading: true });
     axiosWithoutAuth()
       .post("/login", this.state)
-      .then(r => this.props.setToken(r.data.payload))
-      .then(() => this.setState({isLoading:false}))
+      .then(r => this.context.setToken(r.data.payload))
+      .then(() => this.setState({ isLoading: false }))
       .then(() => this.props.history.push("/bubbles"))
       .catch(console.error);
   }

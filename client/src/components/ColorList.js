@@ -4,24 +4,39 @@ import axiosWithAuth from "../api/axiosWithAuth";
 
 const initialColor = {
   color: "",
-  code: { hex: "" },
+  code: { hex: "#" },
 };
 
 const ColorList = ({ colors, triggerUpdate }) => {
   //console.log(colors);
-  const [editing, setEditing] = useState(false);
+  const [editing, setEditing] = useState(null);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
 
   const editColor = color => {
-    setEditing(true);
+    setEditing("existing");
     setColorToEdit(color);
+  };
+
+  const addNew = e => {
+    e.preventDefault();
+    setColorToEdit(initialColor);
+    setEditing("new");
   };
 
   const saveEdit = e => {
     e.preventDefault();
     axiosWithAuth()
       .put(`/colors/${colorToEdit.id}`, colorToEdit)
-      .then(() => setEditing(false))
+      .then(() => setEditing(null))
+      .then(triggerUpdate)
+      .catch(console.error);
+  };
+
+  const saveNewColor = e => {
+    e.preventDefault();
+    axiosWithAuth()
+      .post(`/colors`, colorToEdit)
+      .then(() => setEditing(null))
       .then(triggerUpdate)
       .catch(console.error);
   };
@@ -58,9 +73,12 @@ const ColorList = ({ colors, triggerUpdate }) => {
           </li>
         ))}
       </ul>
-      {editing && (
+      <div className='button-row'>
+        <button onClick={addNew}>Add new</button>
+      </div>
+      {editing === "existing" && (
         <form onSubmit={saveEdit}>
-          <legend>edit color</legend>
+          <legend>{`editing ${colorToEdit.color}`}</legend>
           <label>
             color name:
             <input
@@ -84,12 +102,45 @@ const ColorList = ({ colors, triggerUpdate }) => {
           </label>
           <div className='button-row'>
             <button type='submit'>save</button>
-            <button onClick={() => setEditing(false)}>cancel</button>
+            <button type='button' onClick={() => setEditing(null)}>
+              cancel
+            </button>
+          </div>
+        </form>
+      )}
+      {editing === "new" && (
+        <form onSubmit={saveNewColor}>
+          <legend>new color</legend>
+          <label>
+            color name:
+            <input
+              onChange={e =>
+                setColorToEdit({ ...colorToEdit, color: e.target.value })
+              }
+              value={colorToEdit.color}
+            />
+          </label>
+          <label>
+            hex code:
+            <input
+              onChange={e =>
+                setColorToEdit({
+                  ...colorToEdit,
+                  code: { hex: e.target.value },
+                })
+              }
+              value={colorToEdit.code.hex}
+            />
+          </label>
+          <div className='button-row'>
+            <button type='submit'>save</button>
+            <button type='button' onClick={() => setEditing(false)}>
+              cancel
+            </button>
           </div>
         </form>
       )}
       <div className='spacer' />
-      {/* stretch - build another form here to add a color */}
     </div>
   );
 };

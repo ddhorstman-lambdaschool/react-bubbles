@@ -46,6 +46,8 @@ const ColorList = ({ colors, triggerUpdate }) => {
   const deleteColor = ({ id }) => {
     axiosWithAuth()
       .delete(`/colors/${id}`)
+      .then(()=>setEditing(null))
+      .then(() => setColorToEdit(initialColor))
       .then(triggerUpdate)
       .catch(console.error);
   };
@@ -123,7 +125,7 @@ const ColorList = ({ colors, triggerUpdate }) => {
               color: setForegroundColor(colorToEdit.code.hex),
             }}
           >
-            new color
+            {`new color: ${colorToEdit.color}`}
           </legend>
           <label>
             color name:

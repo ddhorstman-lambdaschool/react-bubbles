@@ -7,7 +7,7 @@ const initialColor = {
   code: { hex: "" },
 };
 
-const ColorList = ({ colors, updateColors, triggerUpdate }) => {
+const ColorList = ({ colors, triggerUpdate }) => {
   //console.log(colors);
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
@@ -21,9 +21,8 @@ const ColorList = ({ colors, updateColors, triggerUpdate }) => {
     e.preventDefault();
     axiosWithAuth()
       .put(`/colors/${colorToEdit.id}`, colorToEdit)
-      .then(console.log)
-      .then(triggerUpdate)
       .then(() => setEditing(false))
+      .then(triggerUpdate)
       .catch(console.error);
   };
 

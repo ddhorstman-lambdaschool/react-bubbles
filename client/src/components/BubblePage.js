@@ -5,27 +5,22 @@ import axiosWithAuth from "../api/axiosWithAuth";
 import Bubbles from "./Bubbles";
 import ColorList from "./ColorList";
 
-export default class BubblePage extends React.Component {
-  state = {
-    colorList: [],
-  };
+export default function BubblePage() {
+  const [colorList, setColorList] = React.useState([]);
 
-  componentDidMount(){
-    this.getColorData();
-  }
+  React.useEffect(() => getColorData(), []);
 
-  getColorData = () => {
+  const getColorData = () => {
     axiosWithAuth()
       .get("/colors")
-      .then(r => this.setState({colorList:r.data}))
+      .then(r => setColorList(r.data))
       .catch(console.error);
   };
-  render() {
-    return (
-      <>
-        <ColorList colors={this.state.colorList} getColorData={this.getColorData} />
-        <Bubbles colors={this.state.colorList} />
-      </>
-    );
-  }
+
+  return (
+    <>
+      <ColorList colors={colorList} getColorData={getColorData} />
+      <Bubbles colors={colorList} />
+    </>
+  );
 }

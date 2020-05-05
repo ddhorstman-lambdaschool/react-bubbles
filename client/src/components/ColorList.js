@@ -9,7 +9,7 @@ const initialColor = {
   code: { hex: "#" },
 };
 
-const ColorList = ({ colors, triggerUpdate }) => {
+const ColorList = ({ colors, getColorData }) => {
   //console.log(colors);
   const [editing, setEditing] = useState(null);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
@@ -30,7 +30,7 @@ const ColorList = ({ colors, triggerUpdate }) => {
     axiosWithAuth()
       .put(`/colors/${colorToEdit.id}`, colorToEdit)
       .then(() => setEditing(null))
-      .then(triggerUpdate)
+      .then(getColorData)
       .catch(console.error);
   };
 
@@ -39,7 +39,7 @@ const ColorList = ({ colors, triggerUpdate }) => {
     axiosWithAuth()
       .post(`/colors`, colorToEdit)
       .then(() => setEditing(null))
-      .then(triggerUpdate)
+      .then(getColorData)
       .catch(console.error);
   };
 
@@ -48,7 +48,7 @@ const ColorList = ({ colors, triggerUpdate }) => {
       .delete(`/colors/${id}`)
       .then(()=>setEditing(null))
       .then(() => setColorToEdit(initialColor))
-      .then(triggerUpdate)
+      .then(getColorData)
       .catch(console.error);
   };
 
